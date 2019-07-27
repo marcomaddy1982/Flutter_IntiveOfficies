@@ -2,15 +2,29 @@ import 'dart:convert';
 
 import 'package:intive_offices/model/socket_event.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:intive_offices/model/locations.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LocationsBloc {
   final WebSocketChannel channel;
 
-  LocationsBloc(this.channel);
+  Sink<List<Location>> get _sink => _locationStream.sink;
+  final _locationStream = BehaviorSubject<List<Location>>();
+  Stream<List<Location>> locations;
+
+  LocationsBloc(this.channel) {
+      locations = _locationStream.stream;
+      channel.stream.listen((message) {
+        SocketEvent socketEvent = eventFromJson(message);
+        if(socketEvent.data.isNotEmpty && socketEvent.event == "event get locations") {
+            List<Location> results = locationFromJson(socketEvent.data);
+            _sink.add(results);
+        }
+      });
+  }
 
   void dispose() {
-    channel.sink.close();
+    _locationStream.close();
   }
 
   void start() {

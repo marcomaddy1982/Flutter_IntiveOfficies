@@ -6,7 +6,8 @@ SocketEvent eventFromJson(String str) {
 }
 
 class SocketEvent {
-  String id, source, destination, event, data;
+  String id, source, destination, event;
+  dynamic data;
 
   SocketEvent({
     this.id,

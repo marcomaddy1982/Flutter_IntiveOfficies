@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intive_offices/bloc/locations_bloc.dart';
-import 'package:intive_offices/model/socket_event.dart';
 import 'package:intive_offices/model/locations.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
+import 'package:intive_offices/screen/screen_office.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final LocationsBloc bloc;
+
   HomePageState(this.bloc) {
     bloc.start();
   }
@@ -27,22 +28,18 @@ class HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: <Widget>[
-          _buildSocketStreamBuilder()
+          _buildLocationsStreamBuilder(),
         ],
       ),
     );
   }
 
-  Widget _buildSocketStreamBuilder() {
+  Widget _buildLocationsStreamBuilder() {
     return StreamBuilder(
-              stream: bloc.channel.stream,
+              stream: bloc.locations,
               builder: (context, snapshot) {
                 if(snapshot.hasData) {
-                  SocketEvent event = eventFromJson(snapshot.data);
-                  if(event.data.isNotEmpty) {
-                    List<Location> locations = locationFromJson(event.data);
-                    return _buildLocationList(locations);
-                  }
+                    return _buildLocationList(snapshot.data);
                 }
                 return Container();
               },
@@ -64,21 +61,14 @@ class HomePageState extends State<HomePage> {
     return ListTile(
       leading: CircleAvatar(backgroundImage: NetworkImage(location.imageUrl)),
       trailing: Icon(Icons.keyboard_arrow_right),
-      title: Text(location.city)
+      title: Text(location.city),
+      onTap: () { 
+          _pushOfficeDetail(location.id);
+       }
     );
   }
-}
 
-/*
-Widget _buildStateWidget(BuildContext context, SocketEventState state) {
-    if (state.loading) {
-      return Center(child: CircularProgressIndicator());
-    } else if (state.error) {
-      return ScreenError();
-    } else if (state.event == null || state.event.isEmpty) {
-      return ScreenEmpty();
-    } else {
-      return Center(child: Text("Here, we will show the locations"));
-    }
+  void _pushOfficeDetail(String locationId) {
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => OfficePage(locationId)));
   }
-*/
+}
