@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intive_offices/bloc/locations_bloc.dart';
 import 'package:intive_offices/model/locations.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
-import 'package:intive_offices/screen/screen_office.dart';
+import 'package:intive_offices/screen/screen_map_office.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -63,12 +63,12 @@ class HomePageState extends State<HomePage> {
       trailing: Icon(Icons.keyboard_arrow_right),
       title: Text(location.city),
       onTap: () { 
-          _pushOfficeDetail(location.id);
+          _pushMapOfficeDetail(location.id);
        }
     );
   }
 
-  void _pushOfficeDetail(String locationId) {
-    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => OfficePage(locationId)));
+  void _pushMapOfficeDetail(String locationId) {
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MapOfficePage(locationId)));
   }
 }

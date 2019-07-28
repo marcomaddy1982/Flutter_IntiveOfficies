@@ -1,91 +1,150 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:intive_offices/bloc/office_bloc.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:intive_offices/model/office.dart';
-import 'package:flutter_simple_dependency_injection/injector.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intive_offices/model/office.dart' as prefix0;
+
 
 class OfficePage extends StatefulWidget {
-  final String locationId;
+  final Office office;
 
-  OfficePage(this.locationId);
+  OfficePage(this.office);
 
   @override
-  State<StatefulWidget> createState() {
-    var officeBloc = Injector.getInjector().get<OfficeBloc>();
-    return OfficePageState(officeBloc, locationId);
-  }
+  OfficePageState createState() => OfficePageState();
 }
 
 class OfficePageState extends State<OfficePage> {
-  final String locationId;
-  final OfficeBloc bloc;
-
-  Completer<GoogleMapController> _controller = Completer();
-
-  static const LatLng _center = const LatLng(45.521563, -122.677433);
-
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-  }
-
-  OfficePageState(this.bloc, this.locationId) {
-    bloc.start(locationId);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Intive Offices"),
       ),
-      body: Column(
-        children: <Widget>[
-          _buildOfficeStreamBuilder(),
-        ],
-      ),
+      body: _buildOfficeDetail()
     );
   }
 
-  Widget _buildOfficeStreamBuilder() {
-    return StreamBuilder(
-              stream: bloc.office,
-              builder: (context, snapshot) {
-                if(snapshot.hasData) {
-                    LatLng position = _buildOfficePosition(snapshot.data);
-                    List<Marker> markers = _buildOfficeMarker(snapshot.data);
-                    return _buildMap(position, markers);
-                }
-                return Container();
+  Widget _buildOfficeDetail() {
+    // return Container();
+    return ListView(
+        children: <Widget>[
+          SizedBox(height: 10),
+          _buildImageCarousel(),
+          _buildOfficeInfos()
+        ],
+      );
+  }
+
+  Widget _buildImageCarousel() {
+    return Container(
+            height: 250,
+            width: MediaQuery.of(context).size.width,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              primary: false,
+              itemCount: 2,
+              itemBuilder: (BuildContext context, int index) {
+                // Map place = places[index];
+                return Padding(
+                  padding: EdgeInsets.all(10),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                        "https://munichnow.com/wp-content/uploads/2017/03/59628-17082366_304.jpg",
+                        width: MediaQuery.of(context).size.width-40,
+                        fit: BoxFit.cover
+                    ),
+                  ),
+                );
               },
-            );
+            ),
+          );
   }
 
-  Widget _buildMap(LatLng position, List<Marker> markers) {
-    return Expanded(
-      child: GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: position,
-                zoom: 11.0,
+  Widget _buildOfficeInfos() {
+    return ListView(
+            padding: EdgeInsets.only(top: 20),
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  SizedBox(width: 20),
+                  Icon(
+                    Icons.location_on,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                  Expanded(child: 
+                    Container(
+                      padding: EdgeInsets.only(left: 10),
+                      alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.office.address,
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        maxLines: 2,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              markers: Set<Marker>.of(markers),
-      ));
+              SizedBox(height: 20),
+              Row(
+                children: <Widget>[
+                  SizedBox(width: 20),
+                  Icon(
+                    Icons.phone,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                  Expanded(child: 
+                    Container(
+                      padding: EdgeInsets.only(left: 10),
+                      alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.office.phone,
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        maxLines: 2,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.only(left:20),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Details",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(20),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 15,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+
+              SizedBox(height: 10),
+            ],
+          );
   }
 
-  LatLng _buildOfficePosition(Office office) {
-   return LatLng(double.parse(office.lat), double.parse(office.long));
-  }
-
-  List<Marker> _buildOfficeMarker(Office office) {
-    return  [Marker(
-      markerId: MarkerId("selectedOffice"),
-      position: _buildOfficePosition(office),
-      infoWindow: InfoWindow(title: office.address),
-      onTap: () {
-        
-      },
-    )];
-  }
 }
