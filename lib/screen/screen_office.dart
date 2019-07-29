@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:intive_offices/model/office.dart';
 
 
@@ -66,32 +65,46 @@ class OfficePageState extends State<OfficePage> {
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  SizedBox(width: 20),
-                  Icon(
-                    Icons.location_on,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                  Expanded(child: 
-                    Container(
-                      padding: EdgeInsets.only(left: 10),
-                      alignment: Alignment.centerLeft,
-                        child: Text(
+              _buildLocationRow(),
+              SizedBox(height: 20),
+              _buildPhoneRow(),
+              SizedBox(height: 20),
+              buildDetailTitle(),
+              buildDetailText(),
+              SizedBox(height: 10),
+            ],
+          );
+  }
+
+  Widget _buildLocationRow() {
+    return Row(
+            children: <Widget>[
+              SizedBox(width: 20),
+              Icon(
+                Icons.location_on,
+                size: 20,
+                color: Colors.black,
+              ),
+              Expanded(child: 
+                Container(
+                  padding: EdgeInsets.only(left: 10),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
                           widget.office.address,
                           style: TextStyle(
                             fontSize: 20,
                           ),
-                        maxLines: 2,
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
+                          maxLines: 2,
+                          textAlign: TextAlign.left,
+                          ),
                   ),
-                ],
-              ),
-              SizedBox(height: 20),
-              Row(
+                ),
+              ],
+            );
+  }
+
+  Widget _buildPhoneRow() {
+      return Row(
                 children: <Widget>[
                   SizedBox(width: 20),
                   Icon(
@@ -114,9 +127,11 @@ class OfficePageState extends State<OfficePage> {
                     ),
                   ),
                 ],
-              ),
-              SizedBox(height: 20),
-              Container(
+              );
+  }
+
+  Widget buildDetailTitle() {
+    return Container(
                 padding: EdgeInsets.only(left:20),
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -128,8 +143,11 @@ class OfficePageState extends State<OfficePage> {
                   maxLines: 1,
                   textAlign: TextAlign.left,
                 ),
-              ),
-              Container(
+              );
+  }
+
+  Widget buildDetailText() {
+    return Container(
                 padding: EdgeInsets.all(20),
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -140,11 +158,6 @@ class OfficePageState extends State<OfficePage> {
                   ),
                   textAlign: TextAlign.left,
                 ),
-              ),
-
-              SizedBox(height: 10),
-            ],
-          );
+              );
   }
-
 }
