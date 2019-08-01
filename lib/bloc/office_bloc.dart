@@ -8,16 +8,16 @@ import 'package:rxdart/rxdart.dart';
 class OfficeBloc {
   final WebSocketChannel channel;
 
-  Sink<Office> get _sink => _officeStream.sink;
-  final _officeStream = BehaviorSubject<Office>();
-  Stream<Office> office;
+  Sink<List<Office>> get _sink => _officeStream.sink;
+  final _officeStream = BehaviorSubject<List<Office>>();
+  Stream<List<Office>> offices;
 
   OfficeBloc(this.channel) {
-    office = _officeStream.stream;
+    offices = _officeStream.stream;
     channel.stream.listen((message) {
         SocketEvent socketEvent = eventFromJson(message);
         if(socketEvent.data.isNotEmpty && socketEvent.event == "event get office") {
-            Office results = officeFromJson(socketEvent.data);
+            List<Office> results = officesFromJson(socketEvent.data);
             _sink.add(results);
         }
       });

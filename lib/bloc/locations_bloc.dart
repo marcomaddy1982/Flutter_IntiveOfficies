@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:intive_offices/model/socket_event.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:intive_offices/model/locations.dart';
+import 'package:intive_offices/model/location.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LocationsBloc {

@@ -23,7 +23,6 @@ class OfficePageState extends State<OfficePage> {
   }
 
   Widget _buildOfficeDetail() {
-    // return Container();
     return ListView(
         children: <Widget>[
           SizedBox(height: 10),
@@ -40,16 +39,18 @@ class OfficePageState extends State<OfficePage> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               primary: false,
-              itemCount: 2,
+              itemCount: widget.office.images.length,
               itemBuilder: (BuildContext context, int index) {
-                // Map place = places[index];
                 return Padding(
                   padding: EdgeInsets.all(10),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
+                        //  "http://localhost:8080/offices/" + widget.office.images[index],
                         "https://munichnow.com/wp-content/uploads/2017/03/59628-17082366_304.jpg",
-                        width: MediaQuery.of(context).size.width-40,
+                        width: widget.office.images.length > 1 
+                        ? MediaQuery.of(context).size.width-40 
+                        : MediaQuery.of(context).size.width-20,
                         fit: BoxFit.cover
                     ),
                   ),
@@ -67,10 +68,14 @@ class OfficePageState extends State<OfficePage> {
             children: <Widget>[
               _buildLocationRow(),
               SizedBox(height: 20),
+              _buildEmailRow(),
+              SizedBox(height: 20),
               _buildPhoneRow(),
               SizedBox(height: 20),
-              buildDetailTitle(),
-              buildDetailText(),
+              _buildEmployeesRow(),
+              SizedBox(height: 20),
+              _buildDetailTitle(),
+              _buildDetailText(),
               SizedBox(height: 10),
             ],
           );
@@ -130,7 +135,61 @@ class OfficePageState extends State<OfficePage> {
               );
   }
 
-  Widget buildDetailTitle() {
+  Widget _buildEmailRow() {
+      return Row(
+                children: <Widget>[
+                  SizedBox(width: 20),
+                  Icon(
+                    Icons.email,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                  Expanded(child: 
+                    Container(
+                      padding: EdgeInsets.only(left: 10),
+                      alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.office.email,
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        maxLines: 2,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+  }
+
+  Widget _buildEmployeesRow() {
+      return Row(
+                children: <Widget>[
+                  SizedBox(width: 20),
+                  Icon(
+                    Icons.people,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                  Expanded(child: 
+                    Container(
+                      padding: EdgeInsets.only(left: 10),
+                      alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.office.employeesNumber.toString(),
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        maxLines: 2,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+  }
+
+  Widget _buildDetailTitle() {
     return Container(
                 padding: EdgeInsets.only(left:20),
                 alignment: Alignment.centerLeft,
@@ -146,12 +205,12 @@ class OfficePageState extends State<OfficePage> {
               );
   }
 
-  Widget buildDetailText() {
+  Widget _buildDetailText() {
     return Container(
                 padding: EdgeInsets.all(20),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                  widget.office.description,
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 15,

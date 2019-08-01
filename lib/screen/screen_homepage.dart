@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intive_offices/bloc/locations_bloc.dart';
-import 'package:intive_offices/model/locations.dart';
+import 'package:intive_offices/model/location.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
 import 'package:intive_offices/screen/screen_map_office.dart';
+import 'package:intive_offices/screen/screen_empty.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -39,9 +40,9 @@ class HomePageState extends State<HomePage> {
               stream: bloc.locations,
               builder: (context, snapshot) {
                 if(snapshot.hasData) {
-                    return _buildLocationList(snapshot.data);
-                }
-                return Container();
+                  return _buildLocationList(snapshot.data);
+                } 
+                return ScreenEmpty();
               },
             );
   }
@@ -62,6 +63,7 @@ class HomePageState extends State<HomePage> {
       leading: CircleAvatar(backgroundImage: NetworkImage(location.imageUrl)),
       trailing: Icon(Icons.keyboard_arrow_right),
       title: Text(location.city),
+      subtitle: Text("office number: " + location.officesNumber.toString()),
       onTap: () { 
           _pushMapOfficeDetail(location.id);
        }

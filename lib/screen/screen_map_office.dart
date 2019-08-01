@@ -51,11 +51,12 @@ class MapOfficePageState extends State<MapOfficePage> {
 
   Widget _buildOfficeStreamBuilder() {
     return StreamBuilder(
-              stream: bloc.office,
+              stream: bloc.offices,
               builder: (context, snapshot) {
                 if(snapshot.hasData) {
-                    LatLng position = _buildOfficePosition(snapshot.data);
-                    List<Marker> markers = _buildOfficeMarker(snapshot.data);
+                    List<Office> offices = snapshot.data;
+                    LatLng position = _buildOfficePosition(offices[0]);
+                    List<Marker> markers = _buildOfficeMarkers(offices);
                     return _buildMap(position, markers);
                 }
                 return Container();
@@ -69,7 +70,7 @@ class MapOfficePageState extends State<MapOfficePage> {
               onMapCreated: _onMapCreated,
               initialCameraPosition: CameraPosition(
                 target: position,
-                zoom: 11.0,
+                zoom: 9.0,
               ),
               markers: Set<Marker>.of(markers),
       ));
@@ -79,19 +80,22 @@ class MapOfficePageState extends State<MapOfficePage> {
    return LatLng(double.parse(office.lat), double.parse(office.long));
   }
 
-  List<Marker> _buildOfficeMarker(Office office) {
-    Marker marker = Marker(
-      markerId: MarkerId("selectedOffice"),
+  List<Marker> _buildOfficeMarkers(List<Office> offices) {
+    return offices.map((office) => _buildMarker(office)).toList();
+  }
+
+  Marker _buildMarker(Office office) {
+    return Marker(
+      markerId: MarkerId(office.lat.toString()),
       position: _buildOfficePosition(office),
       infoWindow: InfoWindow(
         title: office.address, 
-        snippet: "phone: " + office.phone,
+        snippet: office.officeType,
         onTap: () {
           _pushOfficeDetail(office);
         }
       ),
     );
-    return [marker];
   }
 
   void _pushOfficeDetail(Office office) {
