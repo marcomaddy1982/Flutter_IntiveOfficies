@@ -10,12 +10,12 @@ import 'package:intive_offices/model/office.dart';
 import 'package:intive_offices/bloc/locations_bloc.dart';
 import 'package:intive_offices/model/location.dart';
 
-class SocketConnector {
+class SocketManager {
   final WebSocketChannel channel;
   LocationsBloc locationsBloc;
   OfficesBloc officesBloc;
 
-  SocketConnector({@required this.channel}) {
+  SocketManager({@required this.channel}) {
     locationsBloc = LocationsBloc(channel: channel);
     officesBloc = OfficesBloc(channel: channel);
 

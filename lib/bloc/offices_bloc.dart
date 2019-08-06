@@ -1,7 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'dart:convert';
 
-import 'package:intive_offices/model/socket_event.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:intive_offices/model/office.dart';
 import 'package:rxdart/rxdart.dart';
@@ -19,18 +17,6 @@ class OfficesBloc {
 
   void dispose() {
     _officeStream.close();
-  }
-
-  void start(String locationId) {
-    SocketEvent event = SocketEvent(
-      id: "id", 
-      source: "client", 
-      destination: "server", 
-      event: "event get office", 
-      data: locationId
-    );
-    String toJsonString = jsonEncode(event);
-    channel.sink.add(toJsonString);
   }
 
   void sink(List<Office> offices) {
