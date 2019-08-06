@@ -46,8 +46,7 @@ class OfficePageState extends State<OfficePage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                        //  "http://localhost:8080/offices/" + widget.office.images[index],
-                        "https://munichnow.com/wp-content/uploads/2017/03/59628-17082366_304.jpg",
+                        "http://localhost:8080/offices/" + widget.office.images[index],
                         width: widget.office.images.length > 1 
                         ? MediaQuery.of(context).size.width-40 
                         : MediaQuery.of(context).size.width-20,

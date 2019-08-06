@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-
-import 'package:intive_offices/bloc/office_bloc.dart';
-import 'package:intive_offices/model/office.dart';
-
 import 'package:flutter_simple_dependency_injection/injector.dart';
+import 'package:intive_offices/websocket/socket_connector.dart';
+import 'package:intive_offices/model/office.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:intive_offices/screen/screen_office.dart';
 
 class MapOfficePage extends StatefulWidget {
@@ -16,14 +13,14 @@ class MapOfficePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    var officeBloc = Injector.getInjector().get<OfficeBloc>();
-    return MapOfficePageState(officeBloc, locationId);
+    var socketConnector = Injector.getInjector().get<SocketConnector>();
+    return MapOfficePageState(socketConnector, locationId);
   }
 }
 
 class MapOfficePageState extends State<MapOfficePage> {
   final String locationId;
-  final OfficeBloc bloc;
+  final SocketConnector socketConnector;
 
   Completer<GoogleMapController> _controller = Completer();
 
@@ -31,8 +28,8 @@ class MapOfficePageState extends State<MapOfficePage> {
     _controller.complete(controller);
   }
 
-  MapOfficePageState(this.bloc, this.locationId) {
-    bloc.start(locationId);
+  MapOfficePageState(this.socketConnector, this.locationId) {
+    socketConnector.sendOfficeEvent(locationId);
   }
 
   @override
@@ -51,7 +48,7 @@ class MapOfficePageState extends State<MapOfficePage> {
 
   Widget _buildOfficeStreamBuilder() {
     return StreamBuilder(
-              stream: bloc.offices,
+              stream: socketConnector.officesBloc.offices,
               builder: (context, snapshot) {
                 if(snapshot.hasData) {
                     List<Office> offices = snapshot.data;

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:convert';
 
 import 'package:intive_offices/model/socket_event.dart';
@@ -12,15 +13,8 @@ class LocationsBloc {
   final _locationStream = BehaviorSubject<List<Location>>();
   Stream<List<Location>> locations;
 
-  LocationsBloc(this.channel) {
+  LocationsBloc({@required this.channel}) {
       locations = _locationStream.stream;
-      channel.stream.listen((message) {
-        SocketEvent socketEvent = eventFromJson(message);
-        if(socketEvent.data.isNotEmpty && socketEvent.event == "event get locations") {
-            List<Location> results = locationFromJson(socketEvent.data);
-            _sink.add(results);
-        }
-      });
   }
 
   void dispose() {
@@ -37,5 +31,9 @@ class LocationsBloc {
     );
     String toJsonString = jsonEncode(event);
     channel.sink.add(toJsonString);
+  }
+
+  void sink(List<Location> locations) {
+    _sink.add(locations);
   }
 }

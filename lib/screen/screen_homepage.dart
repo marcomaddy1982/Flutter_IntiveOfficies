@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intive_offices/bloc/locations_bloc.dart';
-import 'package:intive_offices/model/location.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
+import 'package:intive_offices/websocket/socket_connector.dart';
+import 'package:intive_offices/model/location.dart';
 import 'package:intive_offices/screen/screen_map_office.dart';
 import 'package:intive_offices/screen/screen_empty.dart';
 
@@ -9,16 +9,16 @@ import 'package:intive_offices/screen/screen_empty.dart';
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    var locationsBloc = Injector.getInjector().get<LocationsBloc>();
-    return HomePageState(locationsBloc);
+    var socketConnector = Injector.getInjector().get<SocketConnector>();
+    return HomePageState(socketConnector);
   }
 }
 
 class HomePageState extends State<HomePage> {
-  final LocationsBloc bloc;
+  final SocketConnector socketConnector;
 
-  HomePageState(this.bloc) {
-    bloc.start();
+  HomePageState(this.socketConnector) {
+    socketConnector.sendLocationEvent();
   }
 
   @override
@@ -37,7 +37,7 @@ class HomePageState extends State<HomePage> {
 
   Widget _buildLocationsStreamBuilder() {
     return StreamBuilder(
-              stream: bloc.locations,
+              stream: socketConnector.locationsBloc.locations,
               builder: (context, snapshot) {
                 if(snapshot.hasData) {
                   return _buildLocationList(snapshot.data);

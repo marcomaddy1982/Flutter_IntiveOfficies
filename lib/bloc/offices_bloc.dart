@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:convert';
 
 import 'package:intive_offices/model/socket_event.dart';
@@ -5,22 +6,15 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:intive_offices/model/office.dart';
 import 'package:rxdart/rxdart.dart';
 
-class OfficeBloc {
+class OfficesBloc {
   final WebSocketChannel channel;
 
   Sink<List<Office>> get _sink => _officeStream.sink;
   final _officeStream = BehaviorSubject<List<Office>>();
   Stream<List<Office>> offices;
 
-  OfficeBloc(this.channel) {
+  OfficesBloc({@required this.channel}) {
     offices = _officeStream.stream;
-    channel.stream.listen((message) {
-        SocketEvent socketEvent = eventFromJson(message);
-        if(socketEvent.data.isNotEmpty && socketEvent.event == "event get office") {
-            List<Office> results = officesFromJson(socketEvent.data);
-            _sink.add(results);
-        }
-      });
   }
 
   void dispose() {
@@ -37,5 +31,9 @@ class OfficeBloc {
     );
     String toJsonString = jsonEncode(event);
     channel.sink.add(toJsonString);
+  }
+
+  void sink(List<Office> offices) {
+    _sink.add(offices);
   }
 }
