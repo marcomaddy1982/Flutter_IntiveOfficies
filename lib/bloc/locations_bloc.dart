@@ -8,7 +8,7 @@ class LocationsBloc {
   final WebSocketChannel channel;
 
   Sink<List<Location>> get _sink => _locationStream.sink;
-  final _locationStream = BehaviorSubject<List<Location>>();
+  final _locationStream = PublishSubject<List<Location>>();
   Stream<List<Location>> locations;
 
   LocationsBloc({@required this.channel}) {

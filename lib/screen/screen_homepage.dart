@@ -65,7 +65,7 @@ class HomePageState extends State<HomePage> {
       leading: CircleAvatar(backgroundImage: NetworkImage(location.imageUrl)),
       trailing: Icon(Icons.keyboard_arrow_right),
       title: Text(location.city),
-      subtitle: Text("office number: " + location.officesNumber.toString()),
+      subtitle: Text("offices number: " + location.officesNumber.toString()),
       onTap: () { 
           _pushMapOfficeDetail(location.id);
        }

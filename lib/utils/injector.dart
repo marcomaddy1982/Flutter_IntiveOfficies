@@ -7,7 +7,8 @@ import 'package:flutter_simple_dependency_injection/injector.dart';
 class InjectionInit {
   static void init() {
     final injector = Injector.getInjector();
-    injector.map<SocketManager>((i) => SocketManager(channel: IOWebSocketChannel.connect('ws://localhost:8080/sockets')));
+    injector.map<SocketManager>((i) => SocketManager(channel: IOWebSocketChannel.connect('ws://localhost:8080/sockets')), 
+                                                     isSingleton: true);
     injector.map<LocationsBloc>(
         (i) => injector.get<SocketManager>().locationsBloc);
     injector.map<OfficesBloc>(

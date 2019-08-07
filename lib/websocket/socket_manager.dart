@@ -28,7 +28,11 @@ class SocketManager {
             List<Office> offices = officesFromJson(socketEvent.data);
             officesBloc.sink(offices);
         }
-      });
+      }, 
+      onError: (error) {
+        print("websocket connection error");
+      },
+    );
   }
 
   void sendLocationEvent() {

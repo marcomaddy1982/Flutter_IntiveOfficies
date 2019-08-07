@@ -8,7 +8,7 @@ class OfficesBloc {
   final WebSocketChannel channel;
 
   Sink<List<Office>> get _sink => _officeStream.sink;
-  final _officeStream = BehaviorSubject<List<Office>>();
+  final _officeStream = PublishSubject<List<Office>>();
   Stream<List<Office>> offices;
 
   OfficesBloc({@required this.channel}) {
